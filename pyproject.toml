@@ -1,0 +1,51 @@
+[project]
+name = "walletinsights"
+dynamic = ["version", "description"]
+readme= "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Col Crunch", email = "colcrunch@eve-o.tech"},
+]
+keywords = [
+    "allianceauth",
+    "eveonline"
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.0",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content"
+]
+dependencies = [
+    "allianceauth>=3.6.1",
+    "django-esi>=4.0.1",
+    "django-eveuniverse>=0.18.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/colcrunch/walletinsights"
+Source = "https://github.com/colcrunch/walletinsights"
+Tracker = "https://github.com/colcrunch/walletinsights/issues"
+
+[tool.isort]
+profile = "django"
+sections = [
+    "FUTURE",
+    "STOLIB",
+    "THIRDPARTY",
+    "DJANGO",
+    "ESI",
+    "FIRSTPARTY",
+    "LOCALFOLDER"
+]
+known_esi = ["esi"]
+known_django = ["django"]
+skip_gitignore = true
