@@ -1,8 +1,10 @@
 from allianceauth.eveonline.models import EveCorporationInfo, EveCharacter
-from esi.models import Token
-from .providers import REQUIRED_SCOPES
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from esi.models import Token
+
+from .providers import REQUIRED_SCOPES
+from .managers import OwnerManager
 
 
 class General(models.Model):
@@ -25,6 +27,9 @@ class Owner(models.Model):
     """
     Owning corporation of a wallet.
     """
+
+    objects = OwnerManager()
+
     corp = models.ForeignKey(
         to=EveCorporationInfo,
         on_delete=models.CASCADE,
