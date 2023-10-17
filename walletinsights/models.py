@@ -1,5 +1,6 @@
 from allianceauth.eveonline.models import EveCorporationInfo, EveCharacter
 from esi.models import Token
+from .providers import REQUIRED_SCOPES
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -94,14 +95,9 @@ class OwnerCharacter(models.Model):
         """
         Provide a token, or return None if one can not be found.
         """
-        required_scopes = (
-            "esi-wallet.read_corporation_wallets.v1",
-            "esi-corporations.read_divisions.v1"
-        )
-
         return (
             Token.objects.filter(character_id=self.character.character_id)
-            .require_scopes(required_scopes)
+            .require_scopes(REQUIRED_SCOPES)
             .require_valid()
             .first()
         )
