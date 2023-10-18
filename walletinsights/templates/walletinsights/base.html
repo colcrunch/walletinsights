@@ -1,0 +1,15 @@
+{% extends 'allianceauth/base.html' %}
+{% load i18n %}
+{% load navactive %}
+
+{% block title %} {% block wallet_title %}{% endblock %} - {% translate "Wallet Insights" %}{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <br />
+        <div class="col-lg-12 container-fluid">
+            {% include 'walletinsights/menu.html' %}
+            {% block wallet_block %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
