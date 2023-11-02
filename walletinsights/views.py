@@ -8,6 +8,7 @@ from allianceauth.services.hooks import get_extension_logger
 
 from .providers import REQUIRED_SCOPES
 from .models import Owner, OwnerCharacter
+from .tasks import update_owner
 
 
 logger = get_extension_logger(__name__)
@@ -16,7 +17,7 @@ logger = get_extension_logger(__name__)
 @login_required()
 @permission_required("walletinsights.access_walletinsights")
 def dashboard(request):
-    pass
+    return render(request, 'walletinsights/dash.html')
 
 
 @login_required()
@@ -26,8 +27,6 @@ def add_owner(request, token):
     """
     View for adding an owner character. If an owner does not already exist for the character,
     also creates an owner.
-
-    TODO: Once task is written to pull data, initiate it when adding a new character.
     :param request:
     :param token:
     :return:
@@ -35,13 +34,23 @@ def add_owner(request, token):
     eve_char = EveCharacter.objects.get(character_id=token.character_id)
     if not OwnerCharacter.objects.filter(character=eve_char).exists():
         # Check for Owner
-        owner = Owner.objects.get_or_create_owner(corp_id=eve_char.corporation_id)
+        owner, owner_created = Owner.objects.get_or_create_owner(corp_id=eve_char.corporation_id)
         o = OwnerCharacter(
             owner=owner,
             character=eve_char
         )
         o.save()
-        messages.success(request, _("Success! Owner added."))
+        if owner_created:
+            update_owner.delay(owner.corp.corporation_id)
+            messages.success(request, _("Success! Owner added."))
+        else:
+            messages.success(request, _("Owner character added!"))
+    elif OwnerCharacter.objects.filter(character=eve_char, is_valid=False).exists():
+        # Update the inactive OwnerCharacter to be marked as active.
+        char = OwnerCharacter.objects.get(character=eve_char)
+        char.is_valid = True
+        char.save()
+        messages.success(request, _("Success! Existing owner character reactivated."))
     else:
         messages.info(request, _("Owner character already exists."))
     return redirect("walletinsights:dashboard")
