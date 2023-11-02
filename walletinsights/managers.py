@@ -25,6 +25,7 @@ class OwnerManager(models.Manager):
         if not EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
             EveCorporationInfo.objects.create_corporation(corp_id)
 
+        corp = EveCorporationInfo.objects.get(corporation_id=corp_id)
         return self.create(
-            corp__corporation_id=corp_id,
+            corp=corp,
         )
