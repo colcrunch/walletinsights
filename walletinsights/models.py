@@ -86,6 +86,8 @@ class OwnerCharacter(models.Model):
         help_text=_("the last time this character was used for syncing")
     )
 
+    is_valid = models.BooleanField(default=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def valid_token(self):
