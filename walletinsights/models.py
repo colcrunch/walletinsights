@@ -156,7 +156,7 @@ class WalletJournalEntry(models.Model):
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=True)
     balance = models.DecimalField(max_digits=20, decimal_places=2, null=True)
     context_id = models.BigIntegerField(null=True)
-    context_id_type = models.CharField(null=True)
+    context_id_type = models.CharField(max_length=255, null=True)
     date = models.DateTimeField(null=False)
     description = models.CharField(max_length=500, null=False)
     first_party_id = models.IntegerField(null=True)
