@@ -11,8 +11,8 @@ class OwnerManager(models.Manager):
     def get_or_create_owner(self, corp_id):
         o = self.filter(corp__corporation_id=corp_id)
         if not o.exists():
-            return self.create_owner(corp_id)
-        return o.first()
+            return self.create_owner(corp_id), True
+        return o.first(), False
 
     def create_owner(self, corp_id):
         """
