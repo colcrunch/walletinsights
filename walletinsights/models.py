@@ -127,7 +127,7 @@ class WalletDivision(models.Model):
         unique_together = ["corp_id", "division_id"]
         indexes = [
             models.Index(fields=["corp_id", "division_id"], name="corp_division_id_idx"),
-            models.Index(fields=["division_id", "division_name"], name="division_division_name_idx"),
+            models.Index(fields=["corp_id", "division_id", "division_name"], name="corp_division_id_name_idx"),
             models.Index(fields=["corp_id", "division_name"], name="corp_division_name_idx"),
             models.Index(fields=["corp_id"], name="corp_id_idx")
         ]
