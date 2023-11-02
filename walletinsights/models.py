@@ -52,14 +52,6 @@ class Owner(models.Model):
         help_text=_("the last date and time that wallet balances were updated.")
     )
 
-    journals_last_updated = models.DateTimeField(
-        null=True,
-        default=None,
-        blank=True,
-        verbose_name=_("journals last updated"),
-        help_text=_("the last date and time that the journals were updated")
-    )
-
     class Meta:
         default_permissions = (())
         verbose_name = _("owner")
@@ -120,6 +112,13 @@ class WalletDivision(models.Model):
     corp = models.ForeignKey(to=Owner, on_delete=models.CASCADE)
     division_id = models.SmallIntegerField()
     division_name = models.CharField(max_length=100)
+    journal_last_updated = models.DateTimeField(
+        null=True,
+        default=None,
+        editable=False,
+        verbose_name=_("journal last updated"),
+        help_text=_("the last time the journal for this division was updated.")
+    )
 
     class Meta:
         default_permissions = (())
