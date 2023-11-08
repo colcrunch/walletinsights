@@ -91,6 +91,8 @@ def update_owner_divisions(owner_corp_id, token_id=None):
             # 1st division never returns a name and is always the master wallet.
             if division["division"] == 1:
                 division["name"] = "Master Wallet"
+            elif "name" not in list(division.keys()) or division["name"] is None:
+                division["name"] = f"Division {division['division']}"
             WalletDivision.objects.update_or_create(
                 corp=owner,
                 division_id=division["division"],
