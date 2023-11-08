@@ -17,7 +17,32 @@ logger = get_extension_logger(__name__)
 @login_required()
 @permission_required("walletinsights.access_walletinsights")
 def dashboard(request):
-    return render(request, 'walletinsights/dash.html')
+    main_corp_id = request.user.profile.main_character.corporation_id
+    select_criteria = {
+        "master_division_id": (
+            "SELECT id FROM walletinsights_walletdivision "
+            "WHERE walletinsights_walletdivision.corp_id = walletinsights_owner.id "
+            "AND walletinsights_walletdivision.division_id = 1"
+        ),
+        "master_wallet_balance": (
+            "SELECT balance FROM walletinsights_walletbalancerecord "
+            "WHERE walletinsights_walletbalancerecord.division_id = master_division_id "
+            "ORDER BY time DESC LIMIT 1"
+        )
+    }
+
+    main_owner = Owner.objects.filter(corp__corporation_id=main_corp_id).extra(select=select_criteria).first()
+
+    if request.user.has_perm("walletinsights.all_corp_access"):
+        owners = Owner.objects.all().exclude(corp__corporation_id=main_corp_id).extra(select=select_criteria)
+    else:
+        owners = Owner.objects.none()
+
+    ctx = {
+        'main_corp': main_owner,
+        "owners": owners,
+    }
+    return render(request, 'walletinsights/dash.html', ctx)
 
 
 @login_required()
