@@ -181,13 +181,20 @@ def update_owner_division_journal(owner_corp_id, division_pk, token_id=None):
         token=token.valid_access_token()
     ).results()
 
+    entry_ids = (
+        WalletJournalEntry.objects
+        .filter(division=division, date__gte=now()-timedelta(days=35))
+        .values_list("entry_id")
+    )
+
     for entry in entries:
         entry_id = entry.pop("id")
-        WalletJournalEntry.objects.update_or_create(
-            division=division,
-            entry_id=entry_id,
-            **entry
-        )
+        if entry_id not in entry_ids:
+            WalletJournalEntry.objects.create(
+                division=division,
+                entry_id=entry_id,
+                **entry
+            )
 
     division.journal_last_updated = now()
     division.save()
