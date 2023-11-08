@@ -1,7 +1,51 @@
 {% extends 'walletinsights/base.html' %}
+{% load l10n %}
+{% load humanize %}
+{% load evelinks %}
 
 {% block wallet_title %}Dashboard{% endblock %}
 
 {% block wallet_block %}
-<p>Content will go here.</p>
+    <div class="container-fluid">
+        <div class="flex-container">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="pull-left">
+                            <img src="{{ main_corp.corp.corporation_id|corporation_logo_url:128 }}" alt="{{ main_corp.corp.corporation_name }} corp logo">
+                        </div>
+                        <h3>{{ main_corp.corp.corporation_name }}</h3>
+                        <h5>{{ main_corp.master_wallet_balance|intcomma|localize }} ISK <br><small><i>(Master Wallet Balance)</i></small></h5>
+                    </div>
+                </div>
+            </div>
+        {% for owner in owners %}
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="pull-left">
+                            <img src="{{ owner.corp.corporation_id|corporation_logo_url:128 }}" alt="{{ owner.corp.corporation_name }} corp logo">
+                        </div>
+                        <h3>{{ owner.corp.corporation_name }}</h3>
+                        <h5>{{ owner.master_wallet_balance|intcomma|localize }} ISK <br><small><i>(Master Wallet Balance)</i></small></h5>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            align-items: flex-start;
+            align-content: space-around;
+        }
+
+    </style>
 {% endblock %}
