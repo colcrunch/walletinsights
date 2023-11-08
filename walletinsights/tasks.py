@@ -80,7 +80,7 @@ def update_owner_divisions(owner_corp_id, token_id=None):
     else:
         token = Token.objects.get(pk=token_id)
 
-    if owner.balances_last_updated + timedelta(hours=1) <= now():
+    if owner.balances_last_updated is None or owner.balances_last_updated + timedelta(hours=1) <= now():
         # Only request new division name data if the cache is expired. (Division names are cached for 3600s)
         division_data = esi.client.Corporation.get_corporations_corporation_id_divisions(
             corporation_id=owner_corp_id,
