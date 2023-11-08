@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from allianceauth.services.hooks import get_extension_logger
 from celery import shared_task, chain
 from django.utils.timezone import now
@@ -78,20 +80,22 @@ def update_owner_divisions(owner_corp_id, token_id=None):
     else:
         token = Token.objects.get(pk=token_id)
 
-    division_data = esi.client.Corporation.get_corporations_corporation_id_divisions(
-        corporation_id=owner_corp_id,
-        token=token.valid_access_token()
-    ).result()
+    if owner.balances_last_updated + timedelta(hours=1) <= now():
+        # Only request new division name data if the cache is expired. (Division names are cached for 3600s)
+        division_data = esi.client.Corporation.get_corporations_corporation_id_divisions(
+            corporation_id=owner_corp_id,
+            token=token.valid_access_token()
+        ).result()
 
-    for division in division_data["wallet"]:
-        # 1st division never returns a name and is always the master wallet.
-        if division["division"] == 1:
-            division["name"] = "Master Wallet"
-        WalletDivision.objects.update_or_create(
-            corp=owner,
-            division_id=division["division"],
-            division_name=division["name"]
-        )
+        for division in division_data["wallet"]:
+            # 1st division never returns a name and is always the master wallet.
+            if division["division"] == 1:
+                division["name"] = "Master Wallet"
+            WalletDivision.objects.update_or_create(
+                corp=owner,
+                division_id=division["division"],
+                division_name=division["name"]
+            )
 
     update_division_balances.delay(owner_corp_id, token.pk)
 
