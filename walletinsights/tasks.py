@@ -2,7 +2,6 @@ from allianceauth.services.hooks import get_extension_logger
 from celery import shared_task, chain
 from django.utils.timezone import now
 from esi.models import Token
-from django.utils.translation import gettext_lazy as _
 
 from .providers import esi
 from .models import Owner, OwnerCharacter, WalletDivision, WalletBalanceRecord, WalletJournalEntry
