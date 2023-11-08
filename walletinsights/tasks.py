@@ -184,7 +184,7 @@ def update_owner_division_journal(owner_corp_id, division_pk, token_id=None):
     entry_ids = (
         WalletJournalEntry.objects
         .filter(division=division, date__gte=now()-timedelta(days=35))
-        .values_list("entry_id")
+        .values_list("entry_id", flat=True)
     )
 
     for entry in entries:
