@@ -172,3 +172,6 @@ class WalletJournalEntry(models.Model):
         default_permissions = (())
         verbose_name = _("wallet journal entry")
         verbose_name_plural = _("wallet journal entries")
+        indexes = [
+            models.Index(fields=["division", "entry_id"], name="division_entry_idx"),
+        ]
